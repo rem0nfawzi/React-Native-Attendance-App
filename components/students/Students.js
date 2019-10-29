@@ -28,19 +28,19 @@ const Students = ({nav}) => {
       const granted = await PermissionsAndroid.request(
         PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
         {
-          title: 'Cool Photo App Camera Permission',
+          title: 'SamaWay needs storage permissions',
           message:
-            'Cool Photo App needs access to your camera ' +
-            'so you can take awesome pictures.',
+            'SamaWay App needs access to your files ' +
+            'so you can export and import khedma files.',
           buttonNeutral: 'Ask Me Later',
           buttonNegative: 'Cancel',
           buttonPositive: 'OK',
         },
       );
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        console.log('You can use the camera');
+        return true;
       } else {
-        console.log('Camera permission denied');
+        return false;
       }
     } catch (err) {
       console.warn(err);
@@ -63,7 +63,11 @@ const Students = ({nav}) => {
   const exportData = async () => {
     await requestStoragePermission();
     getStudents().then(students => {
-      RNFS.writeFile(`${path}/CHATTEND/ch.csv`, dataToCSV(students), 'utf8')
+      RNFS.writeFile(
+        `${path}/SamaWay/mkhdomeen.csv`,
+        dataToCSV(students),
+        'utf8',
+      )
         .then(success => {
           setResult('تم إستخراج البيانات بنجاح!');
           setTimeout(() => {
@@ -72,10 +76,10 @@ const Students = ({nav}) => {
         })
         .catch(err => {
           // create directory first
-          RNFS.mkdir(`${path}/CHATTEND`)
+          RNFS.mkdir(`${path}/SamaWay`)
             .then(() => {
               RNFS.writeFile(
-                `${path}/CHATTEND/ch.csv`,
+                `${path}/SamaWay/mkhdomeen.csv`,
                 dataToCSV(students),
                 'utf8',
               ).then(success => {

@@ -51,7 +51,7 @@ export default class AttendanceScreen extends Component {
         dayName = 'الأثنين';
         break;
       case 2:
-        dayName = 'الثلثاء';
+        dayName = 'الثلاثاء';
         break;
       case 3:
         dayName = 'الأربعاء';
@@ -113,7 +113,7 @@ export default class AttendanceScreen extends Component {
         dayName = 'الأثنين';
         break;
       case 2:
-        dayName = 'الثلثاء';
+        dayName = 'الثلاثاء';
         break;
       case 3:
         dayName = 'الأربعاء';

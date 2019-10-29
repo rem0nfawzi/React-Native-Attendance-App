@@ -33,7 +33,7 @@ const StudentDetails = ({navigation}) => {
     setStudent(s);
   }, []);
   const onBackButtonPressAndroid = () => {
-    navigation.navigate('Students');
+    navigation.push('Students');
     return true;
   };
   const customStyles = StyleSheet.create({

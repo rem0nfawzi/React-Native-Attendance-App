@@ -133,7 +133,7 @@ const UpdateStudentScreen = ({navigation}) => {
 
             <View style={{paddingTop: 5, marginBottom: 150}}>
               <TouchableOpacity style={gStyles.btnWrap} onPress={handleSubmit}>
-                <Text style={gStyles.btnText}>إضافة</Text>
+                <Text style={gStyles.btnText}>حفظ</Text>
               </TouchableOpacity>
             </View>
           </View>
