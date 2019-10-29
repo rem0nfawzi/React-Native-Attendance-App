@@ -1,11 +1,18 @@
 import React, {useEffect, useState} from 'react';
-import {ScrollView, View, Text, TouchableOpacity} from 'react-native';
+import {
+  ScrollView,
+  View,
+  Text,
+  TouchableOpacity,
+  PermissionsAndroid,
+} from 'react-native';
 import Student from './Student';
-import {getStudents} from '../../database/students';
+import {getStudents, deleteStudents, addStudent} from '../../database/students';
 import realm from '../../database/students';
 import styles from '../styles/global';
 import RNFS from 'react-native-fs';
-const path = RNFS.ExternalStorageDirectoryPath + '/CHDATA.json';
+const path = RNFS.ExternalStorageDirectoryPath;
+import DocumentPicker from 'react-native-document-picker';
 
 const Students = ({nav}) => {
   const [result, setResult] = useState('');
@@ -15,9 +22,48 @@ const Students = ({nav}) => {
       setStudentsList(sts);
     });
   }, []);
-  const exportData = () => {
+
+  const requestStoragePermission = async () => {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+        {
+          title: 'Cool Photo App Camera Permission',
+          message:
+            'Cool Photo App needs access to your camera ' +
+            'so you can take awesome pictures.',
+          buttonNeutral: 'Ask Me Later',
+          buttonNegative: 'Cancel',
+          buttonPositive: 'OK',
+        },
+      );
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        console.log('You can use the camera');
+      } else {
+        console.log('Camera permission denied');
+      }
+    } catch (err) {
+      console.warn(err);
+    }
+  };
+
+  const dataToCSV = array => {
+    var str = '';
+    for (var i = 0; i < array.length; i++) {
+      var line = '';
+      for (var index in array[i]) {
+        if (line !== '') line += ',';
+        line += array[i][index];
+      }
+
+      str += line + '\r\n';
+    }
+    return str;
+  };
+  const exportData = async () => {
+    await requestStoragePermission();
     getStudents().then(students => {
-      RNFS.writeFile(path, JSON.stringify(students), 'utf8')
+      RNFS.writeFile(`${path}/CHATTEND/ch.csv`, dataToCSV(students), 'utf8')
         .then(success => {
           setResult('تم إستخراج البيانات بنجاح!');
           setTimeout(() => {
@@ -25,9 +71,74 @@ const Students = ({nav}) => {
           }, 3000);
         })
         .catch(err => {
-          console.log(err.message);
+          // create directory first
+          RNFS.mkdir(`${path}/CHATTEND`)
+            .then(() => {
+              RNFS.writeFile(
+                `${path}/CHATTEND/ch.csv`,
+                dataToCSV(students),
+                'utf8',
+              ).then(success => {
+                setResult('تم إستخراج البيانات بنجاح!');
+                setTimeout(() => {
+                  setResult('');
+                }, 3000);
+              });
+            })
+            .catch(err => console.log(err));
         });
     });
+  };
+
+  const importData = async () => {
+    await requestStoragePermission();
+    // Pick a single file
+    try {
+      const res = await DocumentPicker.pick({
+        type: [DocumentPicker.types.allFiles],
+      });
+      var p = res.uri;
+      var content = await RNFS.readFile(p, 'utf8');
+      content = content.replace(/(\r\n|\n|\r)/gm, ',');
+
+      content = content.split(',');
+      deleteStudents()
+        .then(() => {
+          let importedData = [];
+          let s = {};
+          for (let i = 0; i < content.length; i++) {
+            if (i % 8 === 0) {
+              s = {};
+              s.id = parseInt(content[i]);
+            } else if (i % 8 === 1) {
+              s.name = content[i];
+            } else if (i % 8 === 2) {
+              s.address = content[i];
+            } else if (i % 8 === 3) {
+              s.phone1 = content[i];
+            } else if (i % 8 === 4) {
+              s.phone2 = content[i];
+            } else if (i % 8 === 5) {
+              s.dateOfBirth = content[i];
+            } else if (i % 8 === 6) {
+              s.fatherOfConfession = content[i];
+            } else {
+              s.notes = content[i];
+              importedData.push(s);
+              addStudent(s);
+            }
+          }
+          // console.log(importedData);
+          setStudentsList(importedData);
+        })
+        .catch(err => console.log(err));
+    } catch (err) {
+      if (DocumentPicker.isCancel(err)) {
+        // User cancelled the picker, exit any dialogs or menus and move on
+      } else {
+        throw err;
+      }
+    }
   };
   return (
     <ScrollView style={styles.containerWrap}>
@@ -48,7 +159,7 @@ const Students = ({nav}) => {
             onPress={() => nav.push('AddStudent')}>
             <Text style={styles.btnText}>إضافة مخدوم</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.btnWrap}>
+          <TouchableOpacity style={styles.btnWrap} onPress={importData}>
             <Text style={styles.btnText}>إستيراد بيانات</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.btnWrap} onPress={exportData}>

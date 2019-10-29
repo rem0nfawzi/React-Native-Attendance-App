@@ -17,8 +17,8 @@ export default StyleSheet.create({
   },
   btnWrap: {
     backgroundColor: '#ff8e57',
-    paddingTop: 12,
-    paddingBottom: 12,
+    paddingTop: 15,
+    paddingBottom: 15,
     borderRadius: 5,
     marginLeft: 7,
     marginRight: 7,
@@ -39,7 +39,7 @@ export default StyleSheet.create({
   label: {
     color: '#eee',
     fontFamily: 'Almarai-Regular',
-    marginBottom: 5,
+    marginBottom: 10,
   },
   input: {
     backgroundColor: '#1d9b55',
@@ -76,5 +76,48 @@ export default StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     fontFamily: 'Almarai-Regular',
+  },
+  selectWrap: {
+    backgroundColor: '#1d9b55',
+    paddingTop: 15,
+    paddingBottom: 15,
+    paddingLeft: 20,
+    paddingRight: 20,
+    borderRadius: 5,
+    display: 'flex',
+    flexDirection: 'row-reverse',
+    alignItems: 'center',
+  },
+  selectArrow: {
+    width: 15,
+    height: 15,
+    marginLeft: 20,
+  },
+  selectLabel: {
+    color: '#fff',
+    textAlign: 'right',
+    fontSize: 18,
+    fontFamily: 'Almarai-Regular',
+  },
+  selectItemsWrap: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: '100%',
+    backgroundColor: '#eee',
+    zIndex: 2,
+    borderRadius: 5,
+  },
+  selectItem: {
+    padding: 15,
+  },
+  selectItemLabel: {
+    fontFamily: 'Almarai-Bold',
+  },
+  title: {
+    color: '#fff',
+    fontFamily: 'Almarai-Bold',
+    fontSize: 18,
+    padding: 10,
   },
 });

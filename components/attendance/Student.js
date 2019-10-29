@@ -23,7 +23,6 @@ const Student = ({name, id, addAttend, removeAttend}) => {
     name: {
       color: '#fff',
       fontSize: 15,
-      maxWidth: 100,
       fontFamily: 'Almarai-Regular',
     },
     btn: {

@@ -33,6 +33,8 @@ export const AttendanceSchema = {
     id: 'int',
     time: {type: 'string'},
     students: 'Record[]',
+    type: {type: 'string'},
+    day: {type: 'string'},
   },
 };
 
@@ -54,6 +56,25 @@ export const addStudent = newStudent =>
       .catch(err => reject(err));
   });
 
+export const updateStudent = newStudent =>
+  new Promise((resolve, reject) => {
+    Realm.open(databaseOptions)
+      .then(realm => {
+        let student = realm.objectForPrimaryKey(STUDENT_SCHEMA, newStudent.id);
+        realm.write(() => {
+          student.name = newStudent.name;
+          student.address = newStudent.address;
+          student.phone1 = newStudent.phone1;
+          student.phone2 = newStudent.phone2;
+          student.dateOfBirth = newStudent.dateOfBirth;
+          student.fatherOfConfession = newStudent.fatherOfConfession;
+          student.notes = newStudent.notes;
+        });
+        resolve(true);
+      })
+      .catch(err => reject(err));
+  });
+
 export const getStudents = () =>
   new Promise((resolve, reject) => {
     Realm.open(databaseOptions)
@@ -66,12 +87,42 @@ export const getStudents = () =>
       });
   });
 
+export const deleteStudents = () =>
+  new Promise((resolve, reject) => {
+    Realm.open(databaseOptions)
+      .then(realm => {
+        let students = realm.objects(STUDENT_SCHEMA);
+        realm.write(() => {
+          realm.delete(students);
+        });
+        resolve(true);
+      })
+      .catch(error => {
+        reject(error);
+      });
+  });
+
 export const getStudent = id =>
   new Promise((resolve, reject) => {
     Realm.open(databaseOptions)
       .then(realm => {
         let student = realm.objectForPrimaryKey(STUDENT_SCHEMA, id);
         resolve(student);
+      })
+      .catch(error => {
+        reject(error);
+      });
+  });
+
+export const deleteStudent = id =>
+  new Promise((resolve, reject) => {
+    Realm.open(databaseOptions)
+      .then(realm => {
+        let student = realm.objectForPrimaryKey(STUDENT_SCHEMA, id);
+        realm.write(() => {
+          realm.delete(student);
+        });
+        resolve();
       })
       .catch(error => {
         reject(error);
@@ -102,4 +153,18 @@ export const getAttends = () =>
       });
   });
 
+export const deleteAttends = () =>
+  new Promise((resolve, reject) => {
+    Realm.open(databaseOptions)
+      .then(realm => {
+        let attends = realm.objects(ATTENDANCE_SCHEMA);
+        realm.write(() => {
+          realm.delete(attends);
+        });
+        resolve(true);
+      })
+      .catch(error => {
+        reject(error);
+      });
+  });
 export default new Realm(databaseOptions);

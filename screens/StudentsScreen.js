@@ -1,13 +1,21 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {View} from 'react-native';
 import Header from '../components/common/Header';
 import Students from '../components/students/Students';
+import {AndroidBackHandler} from 'react-navigation-backhandler';
+
 const StudentsScreen = ({navigation}) => {
+  const onBackButtonPressAndroid = () => {
+    navigation.navigate('Home');
+    return true;
+  };
   return (
-    <View>
-      <Header title="المخدومين" nav={navigation} />
-      <Students nav={navigation} />
-    </View>
+    <AndroidBackHandler onBackPress={onBackButtonPressAndroid}>
+      <View>
+        <Header title="المخدومين" nav={navigation} navTo="Home" />
+        <Students nav={navigation} />
+      </View>
+    </AndroidBackHandler>
   );
 };
 

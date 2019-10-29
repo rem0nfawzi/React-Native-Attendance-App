@@ -1,7 +1,7 @@
 import React from 'react';
 import {View, Text, Image, StyleSheet, TouchableOpacity} from 'react-native';
 import arrow from '../../assets/images/arrow.png';
-const Header = ({title, nav}) => {
+const Header = ({title, nav, navTo}) => {
   const styles = StyleSheet.create({
     header: {
       display: 'flex',
@@ -32,7 +32,9 @@ const Header = ({title, nav}) => {
   });
   return (
     <View style={styles.header}>
-      <TouchableOpacity style={styles.arrowWrap} onPress={() => nav.goBack()}>
+      <TouchableOpacity
+        style={styles.arrowWrap}
+        onPress={() => nav.push(navTo)}>
         <Image source={arrow} style={styles.arrow} />
       </TouchableOpacity>
       <Text style={styles.title}>{title}</Text>

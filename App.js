@@ -8,6 +8,7 @@ import AttendanceScreen from './screens/AttendanceScreen';
 import StudentDetails from './screens/StudentDetails';
 import OldAttendsScreen from './screens/OldAttendsScreen';
 import AttendanceDetailsScreen from './screens/AttendanceDetailsScreen';
+import UpdateStudentScreen from './screens/UpdateStudentScreen';
 
 const MainNavigator = createStackNavigator(
   {
@@ -18,6 +19,7 @@ const MainNavigator = createStackNavigator(
     StudentDetails: StudentDetails,
     OldAttends: OldAttendsScreen,
     attendanceDetails: AttendanceDetailsScreen,
+    UpdateStudent: UpdateStudentScreen,
   },
   {
     headerMode: 'none',

@@ -6,14 +6,14 @@ import {
   Text,
   TouchableOpacity,
 } from 'react-native';
-import {addStudent, getStudents} from '../database/students';
+import {updateStudent} from '../database/students';
 import gStyles from '../components/styles/global';
 import realm from '../database/students';
 import Header from '../components/common/Header';
 import styles from '../components/styles/global';
 import {AndroidBackHandler} from 'react-navigation-backhandler';
 
-const AddStudentScreen = ({navigation}) => {
+const UpdateStudentScreen = ({navigation}) => {
   const [student, setStudent] = useState({
     id: 0,
     name: '',
@@ -25,33 +25,31 @@ const AddStudentScreen = ({navigation}) => {
     notes: '',
   });
   useEffect(() => {
-    getStudents().then(students => {
-      setStudent({...student, id: students.length});
-    });
+    setStudent(navigation.getParam('student'));
   }, []);
-
   const onBackButtonPressAndroid = () => {
     navigation.navigate('Students');
     return true;
   };
-
   const [namEntered, setNameEntered] = useState(true);
   const handleSubmit = () => {
     if (student.name === '') {
       setNameEntered(false);
     } else {
       setNameEntered(true);
-      addStudent(student)
-        .then(() => {
-          navigation.push('Students');
-        })
-        .catch(err => console.log(err));
+      updateStudent(student).then(() => {
+        navigation.push('Students');
+      });
     }
   };
   return (
     <AndroidBackHandler onBackPress={onBackButtonPressAndroid}>
       <View>
-        <Header title="إضافة مخدوم" nav={navigation} navTo="Students" />
+        <Header
+          title="تعديل بيانات المخدوم"
+          nav={navigation}
+          navTo="Students"
+        />
 
         <ScrollView style={styles.containerWrap}>
           <View style={styles.container}>
@@ -145,4 +143,4 @@ const AddStudentScreen = ({navigation}) => {
   );
 };
 
-export default AddStudentScreen;
+export default UpdateStudentScreen;

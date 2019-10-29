@@ -3,7 +3,7 @@ import {ScrollView, View, Image, Text, TouchableOpacity} from 'react-native';
 import styles from '../components/styles/global';
 import Cross from '../assets/images/cross.png';
 
-const HomeScreen = ({navigation: {push}}) => {
+const HomeScreen = ({navigation: {navigate}}) => {
   return (
     <ScrollView style={styles.container}>
       <View
@@ -36,17 +36,17 @@ const HomeScreen = ({navigation: {push}}) => {
       <View style={styles.list}>
         <TouchableOpacity
           style={styles.btnWrap}
-          onPress={() => push('Students')}>
+          onPress={() => navigate('Students')}>
           <Text style={styles.btnText}>المخدومين</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.btnWrap}
-          onPress={() => push('Attendance')}>
+          onPress={() => navigate('Attendance')}>
           <Text style={styles.btnText}>تسجيل الحضور</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.btnWrap}
-          onPress={() => push('OldAttends')}>
+          onPress={() => navigate('OldAttends')}>
           <Text style={styles.btnText}>حضور المرات السابقة</Text>
         </TouchableOpacity>
       </View>

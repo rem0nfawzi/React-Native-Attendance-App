@@ -1,11 +1,11 @@
 import React, {Component} from 'react';
 import {
   View,
-  Button,
   Platform,
   Text,
   ScrollView,
   TouchableOpacity,
+  Image,
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import Header from '../components/common/Header';
@@ -14,6 +14,8 @@ import styles from '../components/styles/global';
 import {getStudents, getAttends, addAttendance} from '../database/students';
 import Student from '../components/attendance/Student';
 import realm from 'realm';
+import SelectBox from '../components/attendance/SelectBox';
+import calendar from '../assets/images/calendar.png';
 
 export default class AttendanceScreen extends Component {
   state = {
@@ -24,18 +26,45 @@ export default class AttendanceScreen extends Component {
     attends: 0,
     result: '',
     attendance: {
+      type: 'خدمة',
       id: 0,
       time: '',
+      day: '',
       students: [],
     },
   };
 
   setDate = (event, date) => {
     date = date || this.state.date;
-
+    let dayName = '';
+    switch (date.getDay()) {
+      case 5:
+        dayName = 'الجمعة';
+        break;
+      case 6:
+        dayName = 'السبت';
+        break;
+      case 0:
+        dayName = 'الأحد';
+        break;
+      case 1:
+        dayName = 'الأثنين';
+        break;
+      case 2:
+        dayName = 'الثلثاء';
+        break;
+      case 3:
+        dayName = 'الأربعاء';
+        break;
+      case 4:
+        dayName = 'الخميس';
+        break;
+    }
+    console.log(date.getDay());
     this.setState({
       show: Platform.OS === 'ios' ? true : false,
       date,
+      attendance: {...this.state.attendance, day: dayName},
     });
   };
 
@@ -68,10 +97,36 @@ export default class AttendanceScreen extends Component {
       });
     });
 
+    let dayName = '';
+    let date = new Date();
+    switch (date.getDay()) {
+      case 5:
+        dayName = 'الجمعة';
+        break;
+      case 6:
+        dayName = 'السبت';
+        break;
+      case 0:
+        dayName = 'الأحد';
+        break;
+      case 1:
+        dayName = 'الأثنين';
+        break;
+      case 2:
+        dayName = 'الثلثاء';
+        break;
+      case 3:
+        dayName = 'الأربعاء';
+        break;
+      case 4:
+        dayName = 'الخميس';
+        break;
+    }
     getAttends().then(a => {
       this.setState({
         attendance: {
           ...this.state.attendance,
+          day: dayName,
           id: a.length || 0,
         },
       });
@@ -133,17 +188,53 @@ export default class AttendanceScreen extends Component {
       },
     );
   };
+  handleTypeChange = type => {
+    this.setState({
+      attendance: {
+        ...this.state.attendance,
+        type,
+      },
+    });
+  };
   render() {
     const {show, date, mode} = this.state;
 
     return (
       <View>
-        <Header title="تسجيل الحضور" nav={this.props.navigation} />
+        <Header title="تسجيل الحضور" nav={this.props.navigation} navTo="Home" />
         <ScrollView style={styles.containerWrap}>
           <View style={styles.container}>
+            <View>
+              <SelectBox
+                handleTypeChange={this.handleTypeChange}
+                type={this.state.attendance.type}
+              />
+            </View>
+
             <TouchableOpacity
               onPress={this.datepicker}
-              style={{...styles.btnWrap, marginBottom: 20}}>
+              style={{
+                ...styles.btnWrap,
+                marginBottom: 20,
+                position: 'relative',
+              }}>
+              <View
+                style={{
+                  position: 'absolute',
+                  right: 20,
+                  top: 0,
+                  bottom: 0,
+                  display: 'flex',
+                  justifyContent: 'center',
+                }}>
+                <Image
+                  source={calendar}
+                  style={{
+                    width: 24,
+                    height: 24,
+                  }}
+                />
+              </View>
               <Text
                 style={styles.btnText}>{`${date.getDate()} - ${date.getMonth() +
                 1} - ${date.getFullYear()}`}</Text>
